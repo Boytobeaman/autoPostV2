@@ -1,5 +1,6 @@
 var url = require('url');
 var MongoClient = require('mongodb').MongoClient;
+var _ = require('lodash');
 require('dotenv').config();
 var env = process.env;
 let api_root_path = 'http://localhost:1338'
@@ -11,15 +12,28 @@ MongoClient.connect(url, function (err, db) {
   console.log("Database created!");
   var dbo = db.db("joinplastic");
   // count number of the documents matched
-  dbo.collection("descriptions").find({category:"pallet boxes"},
+  dbo.collection("descriptions").find({},
     {
       projection: { description: 1, category:1, _id: 0 }
     }).toArray(function (err, result) {
       if (err) throw err;
       console.log(result)
       var db_mynewstrapi = db.db("mynewstrapi");
+      
       if (result.length > 0) {
-        db_mynewstrapi.collection("description").insertMany(result)
+        var chunk_result = _.chunk(result, 10000)
+        function insert(i) {
+          if (i>=chunk_result.length) {
+            return
+          }
+          db_mynewstrapi.collection("description").insertMany(chunk_result[i], function (err, res) {
+            if (err) throw err;
+            console.log("Number of documents inserted: " + res.insertedCount);
+            insert(++i)
+          })
+        }
+        insert(0)
+        
       }
       db.close();
     });
