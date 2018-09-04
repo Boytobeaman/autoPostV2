@@ -11,7 +11,7 @@ MongoClient.connect(url, function (err, db) {
   console.log("Database created!");
   var dbo = db.db("joinplastic");
   // count number of the documents matched
-  dbo.collection("descriptions").find({},
+  dbo.collection("descriptions").find({category:"folding crate"},
     {
       projection: { description: 1, category:1, _id: 0 }
     }).toArray(function (err, result) {
