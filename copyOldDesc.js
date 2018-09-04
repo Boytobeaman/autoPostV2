@@ -13,7 +13,7 @@ MongoClient.connect(url, function (err, db) {
   // count number of the documents matched
   dbo.collection("descriptions").find({},
     {
-      projection: { description: 1, _id: 0 }
+      projection: { description: 1, category:1, _id: 0 }
     }).toArray(function (err, result) {
       if (err) throw err;
       console.log(result)
