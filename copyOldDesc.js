@@ -21,7 +21,7 @@ MongoClient.connect(url, function (err, db) {
       var db_mynewstrapi = db.db("mynewstrapi");
       
       if (result.length > 0) {
-        var chunk_result = _.chunk(result, 10000)
+        var chunk_result = _.chunk(result, 5000)
         function insert(i) {
           if (i>=chunk_result.length) {
             return
