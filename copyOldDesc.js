@@ -1,5 +1,5 @@
 var url = require('url');
-
+var MongoClient = require('mongodb').MongoClient;
 require('dotenv').config();
 var env = process.env;
 let api_root_path = 'http://localhost:1338'
