@@ -24,6 +24,7 @@ MongoClient.connect(url, function (err, db) {
         var chunk_result = _.chunk(result, 5000)
         function insert(i) {
           if (i>=chunk_result.length) {
+            db.close();
             return
           }
           db_mynewstrapi.collection("description").insertMany(chunk_result[i], function (err, res) {
@@ -33,9 +34,7 @@ MongoClient.connect(url, function (err, db) {
           })
         }
         insert(0)
-        
       }
-      db.close();
     });
 });
 
