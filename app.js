@@ -9,10 +9,13 @@ const getLinkStr = require('./getLinks');
 require('dotenv').config();
 var env = process.env;
 var mongodb_url = env.mongodb_url;
-let api_root_path = 'http://localhost:1338'
+let api_root_path = env.api_root_path
+let search_limit = 1000
+let filter_lan = 'english'
 
 let api_header_obj = {}
 
+let auth_url = '/auth/local'
 
 let all_keywords = []
 let keyword_path = '/keyword'
@@ -29,7 +32,7 @@ let all_urls=[]
 
 var auth_options = {
   method: 'POST',
-  url: env.auth_url,
+  url: `${api_root_path}${auth_url}`,
   form: {
     'identifier': env.auth_username,
     'password': env.auth_password
@@ -37,7 +40,7 @@ var auth_options = {
 };
 
 var CronJob = require('cron').CronJob;
-new CronJob('00 * * * * *', function () {
+new CronJob('00 */60 */9 * * *', function () {
   rp(auth_options)
     .then(function (response) {
       console.log(`Got jwt==================${JSON.parse(response).jwt}`)
@@ -48,11 +51,11 @@ new CronJob('00 * * * * *', function () {
       Promise
         .all([rp({
           method: 'GET',
-          uri: api_root_path + keyword_path,
+          uri: `${api_root_path}${keyword_path}?_limit=${search_limit}`,
           headers: api_header_obj
         }), rp({
           method: 'GET',
-            uri: `${api_root_path}${cats_path}?lan=en`,
+            uri: `${api_root_path}${cats_path}?lan=${filter_lan}`,
           headers: api_header_obj
         }), rp({
           method: 'GET',
@@ -95,7 +98,7 @@ new CronJob('00 * * * * *', function () {
                 for (let index = 0; index < all_domains.length; index++) {
                   const this_domain = all_domains[index];
                   let post_title;
-                  if (this_domain.login_url && this_domain.login_username && this_domain.login_password && this_domain.auto_post) {
+                  if (this_domain.auto_post && this_domain.login_url && this_domain.login_username && this_domain.login_password && this_domain.auto_post) {
                     let published_keyword = this_domain.published_keyword
                     let un_published_keyword = _.differenceBy(all_keywords, published_keyword, "id")
                     if (un_published_keyword.length > 0) {
@@ -130,28 +133,28 @@ new CronJob('00 * * * * *', function () {
                         password: this_domain.login_password
                       });
                       console.log(JSON.stringify(post))
-                      // WP_client.newPost(post, function (err, id) {
-                      //   if (err) {
-                      //     console.log(err)
-                      //     return
-                      //   }
-                      //   console.log(`new post id:${id} for website:${this_domain.login_url} time: ${new Date()}`)
-                      //   rp({
-                      //     method: 'PUT',
-                      //     uri: api_root_path + domain_path + "/" + this_domain.id,
-                      //     headers: api_header_obj,
-                      //     body: {
-                      //       published_keyword: published_keyword
-                      //     },
-                      //     json: true
-                      //   })
-                      //     .then(function (res) {
-                      //       console.log(`link keyword (${selected_keyword_obj.name}) and domain (${this_domain.name}) success`)
-                      //     })
-                      //     .catch(function (err) {
-                      //       console.log(err.message)
-                      //     });
-                      // })
+                      WP_client.newPost(post, function (err, id) {
+                        if (err) {
+                          console.log(err)
+                          return
+                        }
+                        console.log(`new post id:${id} for website:${this_domain.login_url} time: ${new Date()}`)
+                        rp({
+                          method: 'PUT',
+                          uri: api_root_path + domain_path + "/" + this_domain.id,
+                          headers: api_header_obj,
+                          body: {
+                            published_keyword: published_keyword
+                          },
+                          json: true
+                        })
+                          .then(function (res) {
+                            console.log(`link keyword (${selected_keyword_obj.name}) and domain (${this_domain.name}) success`)
+                          })
+                          .catch(function (err) {
+                            console.log(err.message)
+                          });
+                      })
                     } else {
                       console.log(`all keywords had been post for domain (${this_domain.name}),please add keywords!`)
                     }
@@ -162,10 +165,6 @@ new CronJob('00 * * * * *', function () {
               }
             })
           })
-          
-
-
-          
         })
         .catch(function (err) {
           console.log(err.message)

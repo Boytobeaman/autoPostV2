@@ -82,7 +82,6 @@ module.exports = {
                     if (genLinkNumber < linkNumber) {
                         for (let websitesIndex = 0; websitesIndex < websites.length; websitesIndex++) {
                             if (url.parse(websites[websitesIndex].url, true).host != target_host) {
-
                                 let this_url_obj = all_urls.filter(item => item.url === websites[websitesIndex].url)[0]
                                 let this_url_to_promote_keyword = this_url_obj.to_promote_keyword;
                                 let selectedKeywords;
