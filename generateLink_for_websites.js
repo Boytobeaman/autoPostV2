@@ -27,11 +27,21 @@ let domain_path = '/domain'
 let url_path = '/url'
 let all_urls=[]
 
-let post_domain = `5c2358d62619eb1bd3f27c88`
-let post_cat = `https://www.best-boxes.com/product-category/nest-stack-tub/`
+// things you need to change
+// 左右是为产品加上内链
+//* post_domain (要发产品的域名)
+//* post_cat (这个域名的这个分类的链接)
+//* table_name (在phpMyAdmin 里面的存放某类产品的 表名)
+
+//best-boxes.com
+// let post_domain = `5c2358d62619eb1bd3f27c88`
+
+//vegcrates.com
+let post_domain = `5b87f56f28c4340ac80bc5f5`
+let post_cat = `https://www.vegcrates.com/product-category/euro-containers/`
 let post_internal_link_num = 4
 //backlinks will insert into this table
-let table_name = `best_boxes_com_nestablestoragetub_`
+let table_name = `vegcrates_com_stackingcrate_`
 
 // things you need to care about (post_domain,post_cat,table_name)
 
@@ -110,15 +120,6 @@ rp(auth_options)
               }
             });
         })
-
-        
-        //update relation for this domain and keyword
-        
-        let link_content = getLinkStr.links(this_domain.login_url, all_cats, all_urls);
-        link_content = `${post_title} ${link_content}`;
-        console.log(`to post for (${this_domain.login_url})`)
-        let post = {}
-        post.content = link_content
 
       })
       .catch(function (err) {
