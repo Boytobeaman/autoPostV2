@@ -37,11 +37,19 @@ let all_urls=[]
 // let post_domain = `5c2358d62619eb1bd3f27c88`
 
 //vegcrates.com
-let post_domain = `5b87f56f28c4340ac80bc5f5`
-let post_cat = `https://www.vegcrates.com/product-category/euro-containers/`
+// let post_domain = `5b87f56f28c4340ac80bc5f5`
+
+
+//plastic-crate.com
+// let post_domain = `5b812f97a63d673e340115f5`
+
+//ausplastic.com
+let post_domain = `5bc31e1c8e159828c3804c6f`
+
+let post_cat = `https://www.ausplastic.com/product-category/flip-top-storage-tote/`
 let post_internal_link_num = 4
 //backlinks will insert into this table
-let table_name = `vegcrates_com_stackingcrate_`
+let table_name = `ausplastic_com_nestingcrate_`
 
 // things you need to care about (post_domain,post_cat,table_name)
 
