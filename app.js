@@ -108,10 +108,10 @@ new CronJob('00 */60 */9 * * *', function () {
                       post_title = selected_keyword_obj.name
                       //update relation for this domain and keyword
                       published_keyword.push(selected_keyword_obj)
-                      let link_content = getLinkStr.links(this_domain.login_url, all_cats, all_urls);
+                      let link_content = getLinkStr.links(this_domain.login_url, all_cats, all_urls,post_title);
 
 
-                      link_content = `${post_title} ${link_content}`;
+                      link_content = `<strong>${post_title}</strong> ${link_content}`;
                       console.log(`to post for (${this_domain.login_url})`)
                       let post = {}
                       post.title = post_title;

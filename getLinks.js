@@ -61,11 +61,14 @@ module.exports = {
         }
         
     },
-    outbound: function (address, whole_cat_obj,all_urls) {
+    outbound: function (address, whole_cat_obj,all_urls,post_title) {
         try {
             let total_promote_cat = whole_cat_obj;
             var target_host = url.parse(address, true).host;
-            var prefix = '';
+            var prefix = ``;
+            if(post_title){
+                prefix = `<h2>${post_title}</h2>`;
+            }
             var suffix = 'Welcome to our store!<br>';
             var element = "";
             var linkNumber = 1;
@@ -113,10 +116,10 @@ module.exports = {
         }
         
     },
-    links: function (address,whole_cat_obj,all_urls) {
+    links: function (address,whole_cat_obj,all_urls,post_title) {
         try {
             let internal_content = this.internal(address, whole_cat_obj);
-            let outbound_content = this.outbound(address, whole_cat_obj, all_urls);
+            let outbound_content = this.outbound(address, whole_cat_obj, all_urls,post_title);
             return internal_content + outbound_content
         } catch (error) {
             console.log(error)
