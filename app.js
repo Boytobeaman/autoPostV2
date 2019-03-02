@@ -42,7 +42,7 @@ var auth_options = {
 };
 
 var CronJob = require('cron').CronJob;
-new CronJob('00 */60 */9 * * *', function () {
+new CronJob('00 */60 */16 * * *', function () {
   rp(auth_options)
     .then(function (response) {
       console.log(`Got jwt==================${JSON.parse(response).jwt}`)
