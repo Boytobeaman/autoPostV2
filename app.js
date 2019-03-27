@@ -74,7 +74,7 @@ function getCategoryById(id){
 
 
 var CronJob = require('cron').CronJob;
-new CronJob('00 */3 * * * *', function () {
+new CronJob('00 00 */13 * * *', function () {
   rp(auth_options)
     .then(function (response) {
       console.log(`Got jwt==================${JSON.parse(response).jwt}`)
