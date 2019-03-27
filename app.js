@@ -74,7 +74,7 @@ function getCategoryById(id){
 
 
 var CronJob = require('cron').CronJob;
-new CronJob('00 */2 * * * *', function () {
+new CronJob('00 */3 * * * *', function () {
   rp(auth_options)
     .then(function (response) {
       console.log(`Got jwt==================${JSON.parse(response).jwt}`)
@@ -108,11 +108,12 @@ new CronJob('00 */2 * * * *', function () {
 
           rp(products_auth_options)
             .then(function (response) {
-                  console.log(`Got jwt==================${response.jwt}`)
+                  console.log(`Got product_jwt==================${response.jwt}`)
                   return response.jwt
             })
             .then(function (p_jwt) {
               // got random product
+              console.log(`request for products list ....`)
               return rp({
                   method: 'GET',
                   uri: `${product_api_domin}${product_api_url}?_limit=${product_limit}`,
@@ -120,6 +121,9 @@ new CronJob('00 */2 * * * *', function () {
                       Authorization: `Bearer ${p_jwt}`
                   },
                   json: true
+                })
+                .then(function (response) {
+                  return response
                 })
                 .catch(function (err) {
                   console.log(err.message)
@@ -269,8 +273,6 @@ new CronJob('00 */2 * * * *', function () {
               console.log(err.message)
             })
           })
-
-          
         })
         .catch(function (err) {
           console.log(err.message)
