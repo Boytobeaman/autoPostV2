@@ -201,11 +201,11 @@ new CronJob('00 */3 * * * *', function () {
                             let random_img_url = _.sample(random_product.images).url
                             probe(random_img_url).
                               then(result => {
-                                console.log(`got image info like mime ${result.mime}`); // =>
+                                console.log(`got image info like mime ${result.mime} for (${this_domain.login_url})`); // =>
                                 return result
                               })
                               .then(function(result){
-                                console.log(`prepare for upload image data`)
+                                console.log(`prepare for upload image data for (${this_domain.login_url})`)
                                 let data = {}
                                 data.name = `${post_title.replace(/ +/g,"-")}.${result.url.split('.').pop()}`
                                 data.type = result.mime
@@ -217,14 +217,14 @@ new CronJob('00 */3 * * * *', function () {
                                   .then(function (buffer) {
                                     data.bits = buffer
                                     // post image
-                                    console.log(`uploading image ...`)
+                                    console.log(`uploading image ... for (${this_domain.login_url})`)
                                     WP_client.uploadFile( data, function(error, file){
                                       if(error){
                                         console.log(error)
                                         return
                                       }
                                       post.thumbnail = file.attachment_id
-                                      console.log(`post image success for domain(${this_domain.login_url}) (${post_title})`)
+                                      console.log(`---SUCCESS--- post image for domain(${this_domain.login_url}) (${post_title})`)
                                       // post article and bind feature image
                                       // console.log(JSON.stringify(post))
                                       WP_client.newPost( post, function(err, res){
@@ -232,7 +232,7 @@ new CronJob('00 */3 * * * *', function () {
                                           console.log(error)
                                           return
                                         }
-                                        console.log(`new post id:${res} for website:${this_domain.login_url} --- binded with image (${file.attachment_id}) (${file.file}) time: ${new Date()}`)
+                                        console.log(`---SUCCESS--- new post id:${res} for domain:${this_domain.login_url} --- binded with image (${file.attachment_id}) (${file.file}) time: ${new Date()}`)
                                         //update relation for this domain and keyword
                                         rp({
                                           method: 'PUT',
