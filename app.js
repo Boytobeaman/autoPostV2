@@ -129,7 +129,7 @@ new CronJob('00 */3 * * * *', function () {
                   console.log(err.message)
                 })
             .then(function(products){
-              console.log(`got products list`)
+              console.log(`got products list (${products.length})`)
               let all_products = products
               MongoClient.connect(mongodb_url, function (err, db) {
                 if (err) throw err;
@@ -154,6 +154,7 @@ new CronJob('00 */3 * * * *', function () {
                 const total_promote_cat_with_desc = getDescriptions(all_cats)
                 total_promote_cat_with_desc.then((res) => {
                   all_cats = res
+                  console.log(` --------------- loop domains start ---------------`)
                   if (all_domains.length > 0) {
                     for (let index = 0; index < all_domains.length; index++) {
                       const this_domain = all_domains[index];
@@ -204,6 +205,7 @@ new CronJob('00 */3 * * * *', function () {
                                 return result
                               })
                               .then(function(result){
+                                console.log(`prepare for upload image data`)
                                 let data = {}
                                 data.name = `${post_title.replace(/ +/g,"-")}.${result.url.split('.').pop()}`
                                 data.type = result.mime
