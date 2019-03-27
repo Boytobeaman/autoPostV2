@@ -220,7 +220,7 @@ new CronJob('00 */3 * * * *', function () {
                                     console.log(`uploading image ... for (${this_domain.login_url})`)
                                     WP_client.uploadFile( data, function(error, file){
                                       if(error){
-                                        console.log(error)
+                                        console.log(`Error!!!!(${this_domain.login_url})`, error)
                                         return
                                       }
                                       post.thumbnail = file.attachment_id
@@ -229,7 +229,7 @@ new CronJob('00 */3 * * * *', function () {
                                       // console.log(JSON.stringify(post))
                                       WP_client.newPost( post, function(err, res){
                                         if(err){
-                                          console.log(error)
+                                          console.log(`Error!!!!(${this_domain.login_url})`, error)
                                           return
                                         }
                                         console.log(`---SUCCESS--- new post id:${res} for domain:${this_domain.login_url} --- binded with image (${file.attachment_id}) (${file.file}) time: ${new Date()}`)
