@@ -190,7 +190,7 @@ new CronJob('00 */3 * * * *', function () {
                           let category_id = selected_keyword_obj.category._id
                           
                           let product_cat = getCategoryById(category_id)
-                          var WP_client = wordpress.createClient({
+                          let WP_client = wordpress.createClient({
                             url: this_domain.login_url,
                             username: this_domain.login_username,
                             password: this_domain.login_password
@@ -217,6 +217,7 @@ new CronJob('00 */3 * * * *', function () {
                                   .then(function (buffer) {
                                     data.bits = buffer
                                     // post image
+                                    console.log(`uploading image ...`)
                                     WP_client.uploadFile( data, function(error, file){
                                       if(error){
                                         console.log(error)
