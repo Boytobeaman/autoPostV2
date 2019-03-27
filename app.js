@@ -115,7 +115,7 @@ new CronJob('00 */2 * * * *', function () {
               // got random product
               return rp({
                   method: 'GET',
-                  uri: `${product_api_domin}${product_api_url}&_limit=${product_limit}`,
+                  uri: `${product_api_domin}${product_api_url}?_limit=${product_limit}`,
                   headers: {
                       Authorization: `Bearer ${p_jwt}`
                   },
