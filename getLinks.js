@@ -74,6 +74,7 @@ module.exports = {
             var linkNumber = 1;
             var genLinkNumber = 0;
             var newDisorderedArr = disorganizeArr(total_promote_cat.concat());
+            let description_length = 0;
             for (let index = 0; index < newDisorderedArr.length; index++) {
                 var websites = disorganizeArr(newDisorderedArr[index].urls.concat());
                 var descriptions = disorganizeArr(newDisorderedArr[index].descriptions);
@@ -82,7 +83,6 @@ module.exports = {
                 } else {
                     var pick_description = descriptions.splice(_.random(0, descriptions.length - 1), 1)[0].description;
                     pick_description = pick_description.replace(/\.\.\.$/, ".");
-                    let description_length = 0
                     if (genLinkNumber < linkNumber) {
                         for (let websitesIndex = 0; websitesIndex < websites.length; websitesIndex++) {
                             if (url.parse(websites[websitesIndex].url, true).host != target_host) {
