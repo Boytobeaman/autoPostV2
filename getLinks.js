@@ -111,6 +111,8 @@ module.exports = {
                             }
                         }
                     } else {
+                        console.log(`here`)
+                        console.log(description_length)
                         if(description_length> 500){
                             element = `${element} + <div>${pick_description}</div>`
                             description_length = 0
