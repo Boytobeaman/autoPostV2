@@ -28,8 +28,8 @@ module.exports = {
     internal: function (address, whole_cat_obj) {
         try {
             var target_host = url.parse(address, true).host;
-            var prefix = '';
-            var suffix = 'We will try our best to serve you!<br>';
+            var prefix = '<div>';
+            var suffix = '</div>';
             var element = "";
             let total_promote_cat = whole_cat_obj;
             var newDisorderedArr = disorganizeArr(total_promote_cat.concat());
@@ -65,11 +65,11 @@ module.exports = {
         try {
             let total_promote_cat = whole_cat_obj;
             var target_host = url.parse(address, true).host;
-            var prefix = ``;
+            var prefix = `<div>`;
             if(post_title){
                 prefix = `<h2>${post_title}</h2>`;
             }
-            var suffix = 'Welcome to our store!<br>';
+            var suffix = '</div>';
             var element = "";
             var linkNumber = 1;
             var genLinkNumber = 0;
@@ -82,6 +82,7 @@ module.exports = {
                 } else {
                     var pick_description = descriptions.splice(_.random(0, descriptions.length - 1), 1)[0].description;
                     pick_description = pick_description.replace(/\.\.\.$/, ".");
+                    let description_length = 0
                     if (genLinkNumber < linkNumber) {
                         for (let websitesIndex = 0; websitesIndex < websites.length; websitesIndex++) {
                             if (url.parse(websites[websitesIndex].url, true).host != target_host) {
@@ -98,14 +99,26 @@ module.exports = {
                                         selectedKeywords = getRandomArrValue(newDisorderedArr[index].keyword).name
                                     }
                                 }
-
-                                element += `${pick_description} <a href="${websites[websitesIndex].url}" target="_blank">${selectedKeywords}</a>,`
+                                if(description_length> 500){
+                                    element += `<div>${pick_description}</div> <a href="${websites[websitesIndex].url}" target="_blank">${selectedKeywords}</a>,`
+                                    description_length = 0
+                                }else{
+                                    element += `${pick_description} <a href="${websites[websitesIndex].url}" target="_blank">${selectedKeywords}</a>,`
+                                    description_length += pick_description.length
+                                }
                                 genLinkNumber++;
                                 break
                             }
                         }
                     } else {
-                        element = `${pick_description} + ${element}`
+                        if(description_length> 500){
+                            element = `${element} + <div>${pick_description}</div>`
+                            description_length = 0
+                        }else{
+                            element = `${element} + ${pick_description}`
+                            description_length += pick_description.length
+                        }
+                        
                     }
                 }
 
