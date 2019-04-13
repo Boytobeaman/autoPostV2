@@ -67,7 +67,7 @@ module.exports = {
             var target_host = url.parse(address, true).host;
             var prefix = `<div>`;
             if(post_title){
-                prefix = `<h2>${post_title}</h2>`;
+                prefix = `<h2>${post_title}</h2><div>`;
             }
             var suffix = '</div>';
             var element = "";
