@@ -29,6 +29,7 @@ let cats_path = '/category'
 let all_domains = []
 let domain_path = '/domain'
 
+let company_path = '/companies'
 let desc_path = '/description'
 let url_path = '/url'
 let all_urls=[]
@@ -42,7 +43,7 @@ var auth_options = {
   }
 };
 
-let product_api_domin = 'http://products.50d.top';
+let product_api_domin = env.api_root_path;
 let product_api_url = '/commonproduct/'
 let product_limit = 1000
 var products_auth_options = {
@@ -75,6 +76,7 @@ function getCategoryById(id){
 
 var CronJob = require('cron').CronJob;
 new CronJob('00 00 */12 * * *', function () {
+  let company_name = "Joinplastic"
   rp(auth_options)
     .then(function (response) {
       console.log(`Got jwt==================${JSON.parse(response).jwt}`)
@@ -85,15 +87,7 @@ new CronJob('00 00 */12 * * *', function () {
       Promise
         .all([rp({
           method: 'GET',
-          uri: `${api_root_path}${keyword_path}?_limit=${search_limit}`,
-          headers: api_header_obj
-        }), rp({
-          method: 'GET',
-            uri: `${api_root_path}${cats_path}?lan=${filter_lan}`,
-          headers: api_header_obj
-        }), rp({
-          method: 'GET',
-          uri: api_root_path + domain_path,
+          uri: `${api_root_path}${company_path}?_limit=${search_limit}`,
           headers: api_header_obj
         }), rp({
           method: 'GET',
@@ -101,10 +95,21 @@ new CronJob('00 00 */12 * * *', function () {
           headers: api_header_obj
         })])
         .then(function (results) {
-          all_keywords = JSON.parse(results[0])
-          all_cats = JSON.parse(results[1])
-          all_domains = JSON.parse(results[2])
-          all_urls = JSON.parse(results[3])
+          all_companies = JSON.parse(results[0])
+          let company_obj = all_companies.filter(item=>item.company_name===company_name)[0]
+          let company_id = company_obj.id
+          all_keywords = company_obj.keywords
+          all_cats = company_obj.categories
+          all_cats = all_cats.filter(item=>item.lan === 'english')
+          all_domains = company_obj.domains
+
+          all_urls = JSON.parse(results[1])
+          all_urls = all_urls.filter(item=>item.domain && item.domain.company===company_id)
+
+          all_cats.forEach(element => {
+            element.urls = all_urls.filter(i=>i.category && i.category.id===element.id)
+            element.keyword = all_keywords.filter(i=>i.category && i.category===element.id)
+          });
 
           rp(products_auth_options)
             .then(function (response) {
@@ -116,7 +121,7 @@ new CronJob('00 00 */12 * * *', function () {
               console.log(`request for products list ....`)
               return rp({
                   method: 'GET',
-                  uri: `${product_api_domin}${product_api_url}?_limit=${product_limit}`,
+                  uri: `${product_api_domin}${product_api_url}?company=${company_id}&_limit=${product_limit}`,
                   headers: {
                       Authorization: `Bearer ${p_jwt}`
                   },
@@ -187,20 +192,20 @@ new CronJob('00 00 */12 * * *', function () {
                           }
 
                           // arrange data for image
-                          let category_id = selected_keyword_obj.category._id
+                          let category_id = selected_keyword_obj.category
                           
-                          let product_cat = getCategoryById(category_id)
+                          let product_cat = category_id
                           let WP_client = wordpress.createClient({
                             url: this_domain.login_url,
                             username: this_domain.login_username,
                             password: this_domain.login_password
                           });
 
-                          let random_product = _.sample(all_products.filter(item=>item.category === product_cat))
-                          if(random_product.images && random_product.images.length>0){
+                          let random_product = _.sample(all_products.filter(item=>item.category.id === product_cat))
+                          if(random_product && random_product.images && random_product.images.length>0){
                             let random_img_url = _.sample(random_product.images).url
-                            probe(random_img_url).
-                              then(result => {
+                            probe(random_img_url)
+                              .then(result => {
                                 console.log(`got image info like mime ${result.mime} for (${this_domain.login_url})`); // =>
                                 return result
                               })

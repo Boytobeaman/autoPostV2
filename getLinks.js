@@ -92,7 +92,7 @@ module.exports = {
                                 if (this_url_to_promote_keyword.length > 0) {
                                     selectedKeywords = getRandomArrValue(this_url_to_promote_keyword).name
                                 } else {
-                                    if (newDisorderedArr[index].keyword.length === 0) {
+                                    if (newDisorderedArr[index].keyword && newDisorderedArr[index].keyword.length === 0) {
                                         console.log(`no keywords for cat (${newDisorderedArr[index].name})`)
                                         break
                                     } else {
@@ -111,8 +111,6 @@ module.exports = {
                             }
                         }
                     } else {
-                        console.log(`here`)
-                        console.log(description_length)
                         if(description_length> 500){
                             element = `${element} + <div>${pick_description}</div>`
                             description_length = 0
