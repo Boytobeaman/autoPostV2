@@ -73,7 +73,8 @@ function getCategoryById(id){
   return category_id_mapping[id]
 }
 
-
+console.log(__dirname)
+console.log(`app runing`)
 var CronJob = require('cron').CronJob;
 new CronJob('00 00 */12 * * *', function () {
   let company_name = "Joinplastic"
